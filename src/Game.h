@@ -10,6 +10,7 @@ public:
 
 private:
 	sf::Window window;
+	sf::ContextSettings settings;
 };
 
 #endif

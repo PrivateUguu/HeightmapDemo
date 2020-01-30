@@ -100,3 +100,32 @@ std::string Shader::loadSource(const std::string path)
 	infs.close();
 	return source;
 }
+
+void Shader::use()
+{
+	glUseProgram(m_program);
+}
+
+void Shader::setVec3(const char* name, glm::vec3 vec)
+{
+	glUseProgram(m_program);
+	glUniform3fv(glGetUniformLocation(m_program, name), 1, glm::value_ptr(vec));
+}
+
+void Shader::setVec4(const char* name, glm::vec4 vec)
+{
+	glUseProgram(m_program);
+	glUniform4fv(glGetUniformLocation(m_program, name), 1, glm::value_ptr(vec));
+}
+
+void Shader::setMat3(const char* name, glm::mat3 mat)
+{
+	glUseProgram(m_program);
+	glUniformMatrix3fv(glGetUniformLocation(m_program, name), 1, GL_FALSE, glm::value_ptr(mat));
+}
+
+void Shader::setMat4(const char* name, glm::mat4 mat)
+{
+	glUseProgram(m_program);
+	glUniformMatrix4fv(glGetUniformLocation(m_program, name), 1, GL_FALSE, glm::value_ptr(mat));
+}
