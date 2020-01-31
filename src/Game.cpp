@@ -17,7 +17,10 @@ const float near = 0.1f;
 const float far = 200.0f;
 const float aRatio = static_cast<float>(screenWidth) / static_cast<float>(screenHeight);
 
+sf::Vector2i wCenter(screenWidth/2, screenHeight/2);
+
 Game::Game()
+	:cam(Camera())
 {
 	settings.depthBits = 24;
 	settings.stencilBits = 8;
@@ -25,7 +28,8 @@ Game::Game()
 	settings.majorVersion = 3;
 	settings.minorVersion = 3;
 	window.create(sf::VideoMode(screenWidth, screenHeight), "Terrain Demo", sf::Style::Default, settings);
-
+	window.setFramerateLimit(120);
+	window.setMouseCursorVisible(false);
 	window.setActive();
 
 	if (!gladLoadGL())
@@ -36,6 +40,41 @@ Game::Game()
 
 	glEnable(GL_DEPTH_TEST);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+}
+
+void Game::processInput()
+{
+	sf::Event event;
+	while (window.pollEvent(event))
+	{
+		switch (event.type)
+		{
+		case sf::Event::KeyPressed:
+			if (event.key.code == sf::Keyboard::Escape)
+				window.close();
+			break;
+		case sf::Event::MouseMoved:
+		{
+			sf::Vector2i mPos(sf::Mouse::getPosition(window));
+			cam.updateOrientation(mPos.x - wCenter.x, mPos.y - wCenter.y);
+			if (sf::Mouse::getPosition(window) != wCenter)
+				sf::Mouse::setPosition(wCenter, window);
+		}
+			break;
+		case sf::Event::Closed:
+			window.close();
+			break;
+		}
+	}
+
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+		cam.updatePosition(Camera::FORWARD);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+		cam.updatePosition(Camera::LEFT);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+		cam.updatePosition(Camera::BACKWARD);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		cam.updatePosition(Camera::RIGHT);
 }
 
 void Game::mainLoop()
@@ -60,25 +99,13 @@ void Game::mainLoop()
 
 	while (window.isOpen())
 	{
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			switch (event.type)
-			{
-			case sf::Event::Closed:
-				window.close();
-			case sf::Event::Resized:
-				glViewport(0, 0, event.size.width, event.size.height);
-			case sf::Event::KeyPressed:
-				if (event.key.code == sf::Keyboard::Escape)
-					window.close();
-			}
-		}
+		processInput();
 
 		glClearColor(0.125f, 0.208f, 0.310f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		gshader.use();
+		gshader.setMat4("view", cam.viewMatrix());
 		grid.drawGrid();
 
 		window.display();

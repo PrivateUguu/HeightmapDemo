@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include "sfml/Window.hpp"
+#include "Camera.h"
 
 class Game {
 public:
@@ -11,6 +12,9 @@ public:
 private:
 	sf::Window window;
 	sf::ContextSettings settings;
+	Camera cam;
+
+	void processInput();
 };
 
 #endif
