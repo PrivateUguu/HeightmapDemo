@@ -1,5 +1,7 @@
 #include "Grid.h"
 
+#include "glm/glm.hpp"
+
 Grid::Grid(int w, int h)
 	:width(w),
 	height(h),

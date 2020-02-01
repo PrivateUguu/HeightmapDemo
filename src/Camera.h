@@ -3,17 +3,18 @@
 
 #include "glm/glm.hpp"
 
+//TODO: Add more constructors.
 class Camera
 {
 public:
 	Camera();
 
-	//TODO: Maybe switch out to be more type safe.
-	enum direction { FORWARD, BACKWARD, LEFT, RIGHT };
-
 	glm::mat4 viewMatrix();
 	void updateOrientation(int xPos, int yPos);
-	void updatePosition(direction dir);
+	void moveForwards(float timeDelta = 1.0f);
+	void moveBackwards(float timeDelta = 1.0f);
+	void moveLeft(float timeDelta = 1.0f);
+	void moveRight(float timeDelta = 1.0f);
 
 private:
 	float yaw;
@@ -23,6 +24,8 @@ private:
 	glm::vec3 cameraRight;
 	glm::vec3 cameraUp;
 	glm::vec3 cameraDir;
+
+	float cameraSpeed;
 
 	bool firstFrame = true;
 };

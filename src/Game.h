@@ -14,7 +14,11 @@ private:
 	sf::ContextSettings settings;
 	Camera cam;
 
-	void processInput();
+	float timeDelta = 0.0f;
+
+	void processEvents();
+	void processKeyboard();
+	void processMouse();
 };
 
 #endif

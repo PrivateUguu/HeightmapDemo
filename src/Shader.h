@@ -10,7 +10,6 @@
 
 class Shader {
 public:
-	Shader(const Shader&) = delete;
 	Shader(std::string vertSrc, std::string fragSrc);
 	~Shader();
 
@@ -22,6 +21,7 @@ public:
 	void setMat3(const char* name, glm::mat3 mat);
 	void setMat4(const char* name, glm::mat4 mat);
 
+	Shader(const Shader&) = delete;
 	Shader& operator=(const Shader&) = delete;
 
 private:

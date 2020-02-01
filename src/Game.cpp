@@ -42,7 +42,7 @@ Game::Game()
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
-void Game::processInput()
+void Game::processEvents()
 {
 	sf::Event event;
 	while (window.pollEvent(event))
@@ -54,27 +54,33 @@ void Game::processInput()
 				window.close();
 			break;
 		case sf::Event::MouseMoved:
-		{
-			sf::Vector2i mPos(sf::Mouse::getPosition(window));
-			cam.updateOrientation(mPos.x - wCenter.x, mPos.y - wCenter.y);
-			if (sf::Mouse::getPosition(window) != wCenter)
-				sf::Mouse::setPosition(wCenter, window);
-		}
+			processMouse();
 			break;
 		case sf::Event::Closed:
 			window.close();
 			break;
 		}
 	}
+}
 
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-		cam.updatePosition(Camera::FORWARD);
+void Game::processKeyboard()
+{
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+		cam.moveForwards(timeDelta);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-		cam.updatePosition(Camera::LEFT);
+		cam.moveLeft(timeDelta);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-		cam.updatePosition(Camera::BACKWARD);
+		cam.moveBackwards(timeDelta);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-		cam.updatePosition(Camera::RIGHT);
+		cam.moveRight(timeDelta);
+}
+
+void Game::processMouse()
+{
+	sf::Vector2i mPos(sf::Mouse::getPosition(window));
+	cam.updateOrientation(mPos.x - wCenter.x, mPos.y - wCenter.y);
+	if (sf::Mouse::getPosition(window) != wCenter)
+		sf::Mouse::setPosition(wCenter, window);
 }
 
 void Game::mainLoop()
@@ -97,9 +103,20 @@ void Game::mainLoop()
 
 	Grid grid(gridWidth, gridHeight);
 
+	sf::Clock clock;
+	sf::Time time;
+	float currentFrameTime = 0.0f;
+	float lastFrameTime = 0.0f;
+
 	while (window.isOpen())
 	{
-		processInput();
+		time = clock.getElapsedTime();
+		currentFrameTime = time.asSeconds();
+		timeDelta = currentFrameTime - lastFrameTime;
+		lastFrameTime = currentFrameTime;
+
+		processEvents();
+		processKeyboard();
 
 		glClearColor(0.125f, 0.208f, 0.310f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

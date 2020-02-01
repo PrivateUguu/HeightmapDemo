@@ -66,7 +66,7 @@ bool Shader::linkProgram()
 	for (auto shader : m_shaders)
 		glAttachShader(m_program, shader);
 
-	// Link and quickly check that it succeded.
+	// Link and quickly check that it succeeded.
 	int linkStatus;
 	glLinkProgram(m_program);
 	glGetProgramiv(m_program, GL_LINK_STATUS, &linkStatus);

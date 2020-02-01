@@ -8,12 +8,13 @@ Camera::Camera()
 	cameraPos(glm::vec3(0.0f, 0.0f, 0.0f)),
 	cameraRight(glm::vec3(1.0f, 0.0f, 0.0f)),
 	cameraUp(glm::vec3(0.0f, 1.0f, 0.0f)),
-	cameraDir(glm::vec3(0.0f, 0.0f, 1.0f))
+	cameraDir(glm::vec3(0.0f, 0.0f, 1.0f)),
+	cameraSpeed(4.0f)
 {}
 
 glm::mat4 Camera::viewMatrix()
 {
-	//GLM is collumn major!
+	//GLM is column major!
 	glm::mat4 rotation = {
 		cameraRight.x, cameraUp.x, cameraDir.x, 0.0f,
 		cameraRight.y, cameraUp.y, cameraDir.y, 0.0f,
@@ -34,6 +35,7 @@ glm::mat4 Camera::viewMatrix()
 
 void Camera::updateOrientation(int xDelta, int yDelta)
 {
+	// Stop the camera from jerking when the mouse initially enters the window.
 	if (firstFrame)
 	{
 		firstFrame = false;
@@ -62,21 +64,22 @@ void Camera::updateOrientation(int xDelta, int yDelta)
 	cameraUp = glm::normalize(glm::cross(cameraDir, cameraRight));
 }
 
-void Camera::updatePosition(direction dir)
+void Camera::moveForwards(float timeDelta)
 {
-	switch (dir)
-	{
-	case FORWARD:
-		cameraPos -= cameraDir;
-		break;
-	case BACKWARD:
-		cameraPos += cameraDir;
-		break;
-	case LEFT:
-		cameraPos -= cameraRight;
-		break;
-	case RIGHT:
-		cameraPos += cameraRight;
-		break;
-	}
+	cameraPos -= cameraDir * cameraSpeed * timeDelta;
+}
+
+void Camera::moveBackwards(float timeDelta)
+{
+	cameraPos += cameraDir * cameraSpeed * timeDelta;
+}
+
+void Camera::moveLeft(float timeDelta)
+{
+	cameraPos -= cameraRight * cameraSpeed * timeDelta;
+}
+
+void Camera::moveRight(float timeDelta)
+{
+	cameraPos += cameraRight * cameraSpeed * timeDelta;
 }
