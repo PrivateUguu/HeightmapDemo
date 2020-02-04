@@ -9,7 +9,7 @@ Camera::Camera()
 	cameraRight(glm::vec3(1.0f, 0.0f, 0.0f)),
 	cameraUp(glm::vec3(0.0f, 1.0f, 0.0f)),
 	cameraDir(glm::vec3(0.0f, 0.0f, 1.0f)),
-	cameraSpeed(4.0f)
+	cameraSpeed(8.0f)
 {}
 
 glm::mat4 Camera::viewMatrix()
@@ -82,4 +82,14 @@ void Camera::moveLeft(float timeDelta)
 void Camera::moveRight(float timeDelta)
 {
 	cameraPos += cameraRight * cameraSpeed * timeDelta;
+}
+
+void Camera::moveUp(float timeDelta)
+{
+	cameraPos += cameraUp * cameraSpeed * timeDelta;
+}
+
+void Camera::moveDown(float timeDelta)
+{
+	cameraPos -= cameraUp * cameraSpeed * timeDelta;
 }

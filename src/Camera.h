@@ -15,6 +15,9 @@ public:
 	void moveBackwards(float timeDelta = 1.0f);
 	void moveLeft(float timeDelta = 1.0f);
 	void moveRight(float timeDelta = 1.0f);
+	void moveUp(float timeDelta = 1.0f);
+	void moveDown(float timeDelta = 1.0f);
+	
 
 private:
 	float yaw;

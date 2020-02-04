@@ -1,16 +1,16 @@
-#include "glad/glad.h"
-
 #include "Game.h"
-#include "Grid.h"
 #include "Shader.h"
+#include "Terrain.h"
+
+#include "glad/glad.h"
 
 #include <iostream>
 
 const int screenWidth = 800;
 const int screenHeight = 600;
 
-const int gridWidth = 6;
-const int gridHeight = 6;
+const int gridWidth = 4;
+const int gridHeight = 4;
 
 const float fov = 45.0f;
 const float near = 0.1f;
@@ -73,6 +73,10 @@ void Game::processKeyboard()
 		cam.moveBackwards(timeDelta);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 		cam.moveRight(timeDelta);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+		cam.moveUp(timeDelta);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+		cam.moveDown(timeDelta);
 }
 
 void Game::processMouse()
@@ -85,23 +89,23 @@ void Game::processMouse()
 
 void Game::mainLoop()
 {
-	std::string vertSrc = Shader::loadSource("../shaders/vert.vert");
-	std::string fragSrc = Shader::loadSource("../shaders/frag.frag");
+	std::string tVertSrc = Shader::loadSource("../shaders/terrainVert.vert");
+	std::string tFragSrc = Shader::loadSource("../shaders/terrainFrag.frag");
 
-	Shader gshader(vertSrc, fragSrc);
-	gshader.use();
+	Shader tshader(tVertSrc, tFragSrc);
+	tshader.use();
 	glm::mat4 model(1.0f);
 	glm::mat4 view(1.0f);
 	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -4.0f));
 	glm::mat4 projection = glm::perspective(fov, aRatio, near, far);
 	glm::vec4 color(1.0f, 1.0f, 0.0f, 1.0f);
 
-	gshader.setMat4("model", model);
-	gshader.setMat4("view", view);
-	gshader.setMat4("projection", projection);
-	gshader.setVec4("color", color);
+	tshader.setMat4("model", model);
+	tshader.setMat4("view", view);
+	tshader.setMat4("projection", projection);
+	tshader.setVec4("color", color);
 
-	Grid grid(gridWidth, gridHeight);
+	Terrain terrain(50, 50);
 
 	sf::Clock clock;
 	sf::Time time;
@@ -121,9 +125,9 @@ void Game::mainLoop()
 		glClearColor(0.125f, 0.208f, 0.310f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		gshader.use();
-		gshader.setMat4("view", cam.viewMatrix());
-		grid.drawGrid();
+		tshader.use();
+		tshader.setMat4("view", cam.viewMatrix());
+		terrain.drawTerrain();
 
 		window.display();
 	}

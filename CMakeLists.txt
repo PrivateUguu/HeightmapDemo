@@ -9,7 +9,10 @@ set(GLM_INCLUDES "" CACHE PATH "Directory where GLM headers are located.")
 
 file(GLOB SOURCE src/*.cpp)
 file(GLOB HEADERS src/*.h)
-add_executable(TerrainDemo "${SOURCE}" "${GLAD_DIR}/glad.c" "${HEADERS}" )
+file(GLOB SHADERS shaders/*.vert shaders/*.frag)
+
+add_executable(TerrainDemo "${SOURCE}" "${GLAD_DIR}/glad.c" "${HEADERS}" "${SHADERS}")
+source_group("Shaders" FILES ${SHADERS})
 
 # So ALL_BUILD doesn't get set as startup.
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT TerrainDemo)
